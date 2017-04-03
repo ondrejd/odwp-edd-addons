@@ -49,3 +49,25 @@ endif;
 add_filter( 'edd_countries', 'odwpedda_countries' );
 
 
+
+if ( ! function_exists( 'odwpedda_cc_billing_bottom' ) ):
+    /**
+     * Hides picked up elements from the checkout form.
+     * @todo Add settings to pick up hidden elements.
+     */
+    function odwpedda_cc_billing_bottom() {
+?>
+<script type="text/javascript">
+jQuery( document ).ready( function() {
+    jQuery( "#edd-card-state-wrap" ).hide().val( "xxx" );
+    jQuery( "#edd-card-zip-wrap" ).hide().val( "xxx" );
+    jQuery( "#edd-card-city-wrap" ).hide().val( "xxx" );
+    jQuery( "#edd-card-address-2-wrap" ).hide();
+    jQuery( "#edd-card-address-wrap" ).hide();
+} );
+</script>
+<?php
+    }
+endif;
+
+add_action( 'edd_cc_billing_bottom', 'odwpedda_cc_billing_bottom' );
