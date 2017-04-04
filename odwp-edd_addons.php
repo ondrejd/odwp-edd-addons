@@ -25,8 +25,72 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Plugin constants
-defined( 'ODWPEDDA_SLUG' ) || define( 'ODWPEDDA_SLUG', 'odwp-edd_addons' );
-defined( 'ODWPEDDA_FILE' ) || define( 'ODWPEDDA_FILE', __FILE__ );
+defined( 'ODWPEDDA_SLUG' )    || define( 'ODWPEDDA_SLUG', 'odwp-edd_addons' );
+defined( 'ODWPEDDA_FILE' )    || define( 'ODWPEDDA_FILE', __FILE__ );
+defined( 'ODWPEDDA_VERSION' ) || define( 'ODWPEDDA_VERSION', '1.0.0' );
+defined( 'ODWPEDDA_OPTSKEY' ) || define( 'ODWPEDDA_OPTSKEY', 'odwpedda_settings' );
+
+
+
+if ( ! function_exists( 'odwpedda_init' ) ) :
+    /**
+     * Initializes plugin.
+     */
+    function odwpedda_init() {
+        // Ensure that plugin's options are initialized
+        odwpedda_get_options();
+    }
+endif;
+
+
+
+if ( !function_exists( 'odwpedda_get_default_options' ) ) :
+    /**
+     * Returns plugin's default options.
+     * @return array
+     */
+    function odwpedda_get_default_options() {
+        return [
+            'odwpedda_settings_field_0' => 'CZ,SK',
+            'odwpedda_settings_field_1' => 'address,address2,city,zip,state',
+        ];
+    }
+endif;
+
+
+
+if ( ! function_exists( 'odwpedda_get_options' ) ) :
+    /**
+     * Get plugin's options.
+     */
+    function odwpedda_get_options() {
+		$options = get_option( ODWPEDDA_OPTSKEY );
+		$need_update = false;
+
+		if ( !is_array( $options) ) {
+			$need_update = true;
+			$options = array();
+		}
+
+		foreach (odwpedda_get_default_options() as $key => $value ) {
+			if ( !array_key_exists( $key, $options ) ) {
+				$options[$key] = $value;
+				$need_update = true;
+			}
+		}
+
+		if ( !array_key_exists( 'latest_used_version', $options ) ) {
+			$options['latest_used_version'] = ODWPEDDA_VERSION;
+			$need_update = true;
+		}
+
+		if ( $need_update === true ) {
+			update_option( ODWPEDDA_OPTSKEY, $options );
+		}
+
+		return $options;
+    }
+endif;
 
 
 
@@ -94,11 +158,11 @@ if ( !function_exists( 'odwpedda_admin_init' ) ) :
      * Initializes all what is needed for this plugin in WP administration.
      */
     function odwpedda_admin_init() {
-        register_setting( ODWPEDDA_SLUG, 'odwpedda_settings' );
+        register_setting( ODWPEDDA_SLUG, ODWPEDDA_OPTSKEY );
 
         add_settings_section(
             'odwpedda_settings_section',
-            __( 'Your section description', ODWPEDDA_SLUG ),
+            __( 'Nastavení pluginu', ODWPEDDA_SLUG ),
             'odwpedda_settings_section_callback',
             ODWPEDDA_SLUG
         );
@@ -125,10 +189,10 @@ endif;
 
 if ( ! function_exists( 'odwpedda_settings_section_callback' ) ) :
     /**
-     * ...
+     * Prints settings section.
      */
     function odwpedda_settings_section_callback() {
-        echo __( 'This section description', 'odwp-edd_addons' );
+        echo __( 'Níže můžete upravit chování pluginu - v prvním případě můžete vybrat země, na které bude omezen výběr na <em>Checkout</em> stránce; v druhém vybrat pole, které budou na téže stránce pro uživatele schována (některá z těchto polí vyžadují hodnoty a proto jim v případě skrytí budou podsunuty předdefinované hodnoty).', ODWPEDDA_SLUG );
     }
 endif;
 
@@ -136,10 +200,10 @@ endif;
 
 if ( ! function_exists( 'odwpedda_settings_field_0_render' ) ) :
     /**
-     * ...
+     * Prints the first settings field.
      */
     function odwpedda_settings_field_0_render() {
-        $options = get_option( 'odwpedda_settings' );
+        $options = (array) get_option( ODWPEDDA_OPTSKEY );
         $selected = array();
 
         // Get selected options
@@ -160,10 +224,10 @@ endif;
 
 if ( ! function_exists( 'odwpedda_settings_field_1_render' ) ) :
     /**
-     * ...
+     * Prints the second settings field.
      */
     function odwpedda_settings_field_1_render() {
-        $options = get_option( 'odwpedda_settings' );
+        $options = (array) get_option( ODWPEDDA_OPTSKEY );
         $available = array(
             'address' => __( 'Adresa', ODWPEDDA_SLUG ),
             'address2' => __( 'Adresa (2. řádek)', ODWPEDDA_SLUG ),
@@ -227,8 +291,9 @@ endif;
 
 
 // Register action/filter hooks
-add_filter( 'edd_countries', 'odwpedda_countries' );
+add_action( 'init', 'odwpedda_init' );
 add_action( 'edd_cc_billing_bottom', 'odwpedda_cc_billing_bottom' );
+add_filter( 'edd_countries', 'odwpedda_countries' );
 
 if ( is_admin() ) {
     add_action( 'admin_menu', 'odwpedda_admin_init' );
