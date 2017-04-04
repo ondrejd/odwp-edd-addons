@@ -17,6 +17,10 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 2. Rozbalte archív do adresáře s pluginy vaší instalace aplikace WordPress
 3. Aktivujte plugin v administraci aplikace Wordpress
 
+== Screenshots ==
+
+1. `screenshot-1.png`
+
 == Changelog ==
 
 = 1.0 =
