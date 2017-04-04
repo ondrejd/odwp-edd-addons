@@ -38,6 +38,23 @@ if ( ! function_exists( 'odwpedda_countries' ) ) :
      * @todo Load enabled countries from settings of the plugin.
      */
     function odwpedda_countries( $countries ) {
+        if ( function_exists( 'get_current_screen' ) ) {
+            $screen = get_current_screen();
+
+            // In plugin's options page we need to print ALL countries in the selectbox
+            if ( ( $screen instanceof WP_Screen ) ) {
+                if ( $screen->base == 'settings_page_odwp-edd_addons/odwp-edd_addons' ) {
+                    // Remove the first item - is just empty row
+                    array_shift($countries);
+
+                    return $countries;
+                }
+            }
+        }
+
+        // 1. get plugin's options
+        // 2. get `enabled_countries` option
+        // 3. return enabled countries
         return [
             'CZ' => __( 'Česká republika', ODWPEDDA_SLUG ),
             'SK' => __( 'Slovenská republika', ODWPEDDA_SLUG ),
