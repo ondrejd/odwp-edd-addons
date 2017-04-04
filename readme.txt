@@ -22,7 +22,7 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 = 1.0 =
 
 - filtr pro `edd_countries` - filtr je omezen dle nastavení pluginu
-- vybrané prvky _checkout_ formuláře jsou schované
+- vybrané prvky _checkout_ formuláře jsou schované (dle nastavení)
 - __úkol 3__
 - __úkol 4__
 - prvotní verze nahraná na GitHub
