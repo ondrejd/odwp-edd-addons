@@ -59,9 +59,12 @@ if ( ! function_exists( 'odwpedda_cc_billing_bottom' ) ):
 ?>
 <script type="text/javascript">
 jQuery( document ).ready( function() {
-    jQuery( "#edd-card-state-wrap" ).hide().val( "xxx" );
-    jQuery( "#edd-card-zip-wrap" ).hide().val( "xxx" );
-    jQuery( "#edd-card-city-wrap" ).hide().val( "xxx" );
+    jQuery( "#edd-card-state-wrap" ).hide();
+    jQuery( "#card_state" ).val( "přeskočeno" );
+    jQuery( "#edd-card-zip-wrap" ).hide();
+    jQuery( "#card_zip" ).val( "12345" );
+    jQuery( "#edd-card-city-wrap" ).hide();
+    jQuery( "#card_city" ).val( "přeskočeno" );
     jQuery( "#edd-card-address-2-wrap" ).hide();
     jQuery( "#edd-card-address-wrap" ).hide();
 } );
